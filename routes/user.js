@@ -174,7 +174,6 @@ router.post(
       return res.status(401).send({ auth: false, message: "No token provided." });
   
     jwt.verify(token, process.env.TOKEN, function(err, decoded) {
-        console.log(decoded)
       if (err)
         return res
           .status(500)
@@ -188,6 +187,7 @@ router.post(
           return res.status(500).send("There was a problem finding the user.");
         if (!results) return res.status(404).send("No user found.");
 
+        res.sendStatus(200).send({auth: true, token: results})
         next(results[0]);
       });
     });
