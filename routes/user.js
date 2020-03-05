@@ -172,17 +172,18 @@ router.post(
         return res
           .status(500)
           .send({ auth: false, message: "Failed to authenticate token." });
-  
+
+        console.log(decoded.id)
         res.status(200).send(decoded);
 
-      let userId = "SELECT * FROM `users`";
+      let userId = "SELECT * FROM `users` WHERE users.id = '" + decoded.id + "' ";
       mysqlDB.query(userId, (err, results) => {
         if (err)
           return res.status(500).send("There was a problem finding the user.");
         if (!results) return res.status(404).send("No user found.");
 
-        // res.status(200).send({auth: true, token: decoded})
-        next(JSON.stringify(results));
+        // res.status(200).send({auth: true, token: results})
+        next(results[0]);
       });
     });
  });
