@@ -183,7 +183,7 @@ router.post(
         if (!results) return res.status(404).send("No user found.");
 
         // res.status(200).send({auth: true, token: results})
-        next(results[0]);
+        next(JSON.stringify(results));
       });
     });
  });
