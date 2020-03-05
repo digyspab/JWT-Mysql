@@ -7,6 +7,7 @@ const ejs = require('ejs');
 
 const keys = require('./config/keys');
 const user = require('./routes/user');
+const indexPage = require('./routes/index');
 
 
 
@@ -25,6 +26,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }))
 
+app.use(cors());
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -33,11 +35,7 @@ app.use(function(req, res, next) {
 
 
 // routes
-app.get('/', (req, res) => {
-    res.json({
-        message: "App is running",
-    });
-});
+app.get('/', indexPage);
 
 app.use('/user', user);
 

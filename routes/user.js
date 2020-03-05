@@ -6,11 +6,20 @@ const VerifyToken = require("../middleware/auth");
 const mysqlDB = require("../config/db");
 
 const router = express.Router();
+
+
+
 /**
- * @method - POST
+ * @method - GET and POST
  * @description - User Signup
  * @param - /user/signup
  */
+
+ router.get('/signup', (req, res, next) => {
+  res.render('layouts/register', {
+    title: 'Register Page',
+  })
+ }); 
 
 router.post(
   "/signup",
@@ -23,7 +32,7 @@ router.post(
       .isEmpty(),
     check("password", "Please enter a valid password").isLength({ min: 6 })
   ],
-  (req, res) => {
+  async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -33,16 +42,16 @@ router.post(
 
     try {
 
-      let userFind = "SELECT * FROM `users` WHERE email = '" + email + "' ";
+      let userFind =  "SELECT * FROM `users` WHERE email = '" + email + "' ";
 
-      mysqlDB.query(userFind, (err, results) => {
+       mysqlDB.query(userFind, (err, results) => {
         if (err) {
           res.status(501).send("Error in finding result");
         }
 
         if (results.length > 0) {
-          console.log(results);
-          return res.status(500).send("Alerdy user present in database..");
+
+          return res.redirect('/user/signup');
         } else {
           let hashedPassword = bcrypt.hashSync(password, 8);
 
@@ -53,7 +62,6 @@ router.post(
             insert,
             [username, email, hashedPassword],
             (err, resultsInsert) => {
-              console.log(resultsInsert.insertId)
               if (err) {
                 return res
                   .status(500)
@@ -73,7 +81,14 @@ router.post(
                   expiresIn: 10000
                 }
               );
-
+              
+              console.log(token)
+              // res.redirect('/user/login');
+              // res.render('layouts/login', {
+              //   title: 'Login Page',
+              //   auth: true,
+              //   token: token,
+              // })
               res.status(200).send({ auth: true, token: token });
             }
           );
@@ -88,10 +103,17 @@ router.post(
 
 
 /**
- * @method - POST
+ * @method - GET and POST
  * @description - Get LoggedIn User
  * @param - /user/me
  */
+
+router.get('/login', (req, res, next) => {
+  res.render('layouts/login', {
+    title: 'Login Page',
+  });
+});
+
 router.post(
   "/login",
   [
@@ -135,6 +157,14 @@ router.post(
             }
           );
 
+          // res.redirect('/user/me')
+
+          // res.render('pages/dashboard', {
+          //   title: 'Dashboard',
+          //   auth: true,
+          //   token: token
+          // });
+
           res.status(200).json({
             auth: true,
             token: token
@@ -163,14 +193,26 @@ router.post(
  */
 
  router.get('/me', VerifyToken, (req, res, next) => {
-  let userId = "SELECT * FROM `users`";
+   console.log(req.userId)
+  let userId = "SELECT * FROM `users` WHERE users.id = '" + req.userId + "' ";
   mysqlDB.query(userId, (err, results) => {
     if (err)
       return res.status(500).send("There was a problem finding the user.");
     if (!results) return res.status(404).send("No user found.");
+
+    // res.render('pages/dashboard.ejs', {
+    //   title: 'Dashboard',
+    //   results: results,
+    //   token: token,
+    //   auth: true
+    // })
     res.status(200).send(results)
   });
  });
 
+
+router.get('/logout', (req, res, next) => {
+  res.status(200).send({ auth: false, token: null});
+});
 
 module.exports = router;

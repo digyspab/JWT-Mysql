@@ -1,0 +1,19 @@
+<%- include('../index.ejs') -%>
+
+<div class="container">
+    <h1>Dashboard</h1> <span> <a href=""> Logout </a></span>
+
+    <input type="hidden" id="token" value="<%= token %>">
+    <p><%= token %></p>
+    
+</div>
+
+
+<script>
+    let token = document.getElementById('token').value;
+    console.log(token);
+    
+</script>
+
+
+<%- include('../include/footer.ejs') -%>

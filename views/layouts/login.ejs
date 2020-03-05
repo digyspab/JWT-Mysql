@@ -1,0 +1,72 @@
+<%- include ('../include/header.ejs') -%>
+
+<div class="mx-auto col-sm-6 mt-3">
+
+    <!-- form user info -->
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-8">
+                    <h4 class="mb-0">User Register </h4>
+
+                </div>
+                <div class="col-4">
+                    <span class="float-right"><a href="">Login</a></span>
+
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+
+            <!-- FORM START -->
+            <form class="form" role="form" method="POST" action=""  name="RegsiterValidation">
+
+
+
+                <!-- EMAIL -->
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label form-control-label" >Email</label>
+                    <div class="col-lg-9">
+                        <input class="form-control" name="email" type="email" value=""
+                            placeholder="mail@gmail.com">
+                        <small style="color: red" id="email_error">  </small>
+                    </div>
+                </div>
+
+                <!-- PASSWORD -->
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label form-control-label">Password</label>
+                    <div class="input-group col-lg-9">
+
+                        <input class="form-control border-right-0" id="password" name="password" type="password"
+                            value="" placeholder="Enter password">
+                        <span class="input-group-append bg-white">
+                            <button class="btn border border-left-0" type="button" onclick="myFunction()"><i
+                                    class="fab fa-expeditedssl"></i></button>
+                        </span>
+                    </div>
+                    <small class="col-lg-3"> </small>
+                    <small class="col-lg-9" style="color: red" id="password_error">  </small>
+                </div>
+
+                <!-- REMEMBER ME -->
+                <div class="checkbox">
+                    <label for="select-checkbox">
+                        <input name="terms" id="select-checkbox" type="checkbox" >I have read and
+                        agree to the <a href="#">terms of service</a>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Sign in</button>
+            </form>
+            <!-- FORM END -->
+
+        </div>
+    </div>
+</div>
+
+
+
+<%- include ('../include/footer.ejs') -%>
+
+<!-- <script src="../../js/assets/formValidation.js"></script> -->
