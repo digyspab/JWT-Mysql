@@ -34,6 +34,7 @@ router.post(
     try {
 
       let userFind = "SELECT * FROM `users` WHERE email = '" + email + "' ";
+
       mysqlDB.query(userFind, (err, results) => {
         if (err) {
           res.status(501).send("Error in finding result");
@@ -64,7 +65,7 @@ router.post(
 
               var token = jwt.sign(
                 {
-                  id: results.id
+                  payload
                 },
                 process.env.TOKEN,
                 {
@@ -111,6 +112,7 @@ router.post(
 
     try {
       let findUser = "SELECT * FROM `users` WHERE email = ? ";
+
       mysqlDB.query(findUser, [email, password], (err, results) => {
         if (results.length > 0) {
           let comparePassword = bcrypt.compareSync(
@@ -187,10 +189,14 @@ router.post(
           return res.status(500).send("There was a problem finding the user.");
         if (!results) return res.status(404).send("No user found.");
 
-        res.sendStatus(200).send({auth: true, token: results})
+        res.status(200).send({auth: true, token: results})
         next(results[0]);
       });
     });
  });
+
+//  router.get('/me', (req, res, next) => {
+
+//  });
 
 module.exports = router;
