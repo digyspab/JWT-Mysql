@@ -52,7 +52,8 @@ router.post(
           mysqlDB.query(
             insert,
             [username, email, hashedPassword],
-            (err, results) => {
+            (err, resultsInsert) => {
+              console.log(resultsInsert.insertId)
               if (err) {
                 return res
                   .status(500)
@@ -60,7 +61,7 @@ router.post(
               }
 
               const payload = {
-                user: { id: results.id }
+                user: { id: resultsInsert.insertId }
               };
 
               var token = jwt.sign(
@@ -72,8 +73,6 @@ router.post(
                   expiresIn: 10000
                 }
               );
-
-              console.log(token);
 
               res.status(200).send({ auth: true, token: token });
             }
@@ -124,9 +123,11 @@ router.post(
             return res.status(400).send({ auth: false, token: null });
           }
 
+          console.log(results[0].id)
+
           var token = jwt.sign(
             {
-              id: results[0]
+              id: results[0].id
             },
             process.env.TOKEN,
             {
@@ -145,15 +146,6 @@ router.post(
         }
       });
 
-      let findUserPassword =
-        "SELECT * FROM `users` WHERE email = ? AND password = ? ";
-
-      // mysqlDB.query(findUserPassword, (err, results) => {
-      //     if(results.length > 0) {
-      //         console.log(results);
-      //         res.send(results);
-      //     }
-      // });
     } catch (err) {
       console.log(err);
       res.status(500).json({
@@ -189,8 +181,8 @@ router.post(
           return res.status(500).send("There was a problem finding the user.");
         if (!results) return res.status(404).send("No user found.");
 
-        res.status(200).send({auth: true, token: results})
-        next(results[0]);
+        // res.status(200).send({auth: true, token: decoded})
+        next(JSON.stringify(results));
       });
     });
  });
