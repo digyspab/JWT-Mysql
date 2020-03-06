@@ -172,13 +172,14 @@ router.post(
  */
 
  router.get('/me', VerifyToken, (req, res, next) => {
-   console.log(req.userId)
+
+
   let userId = "SELECT * FROM `users` WHERE users.id = '" + req.userId + "' ";
   mysqlDB.query(userId, (err, results) => {
     if (err)
       return res.status(500).send("There was a problem finding the user.");
     if (!results) return res.status(404).send("No user found.");
-    res.status(200).send(results)
+    res.status(200).send({ results: results });
   });
  });
 
