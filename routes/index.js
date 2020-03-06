@@ -2,9 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', (req, res, next) => {
-    res.send(`
-        <a href="/user/signup"> Register </a>
-    `)
+    res.send('App is running')
 });
 
 module.exports = router;

@@ -15,12 +15,6 @@ const router = express.Router();
  * @param - /user/signup
  */
 
- router.get('/signup', (req, res, next) => {
-  res.render('layouts/register', {
-    title: 'Register Page',
-  })
- }); 
-
 router.post(
   "/signup",
   [
@@ -51,7 +45,7 @@ router.post(
 
         if (results.length > 0) {
 
-          return res.redirect('/user/signup');
+          return res.status(500).send('User already present');
         } else {
           let hashedPassword = bcrypt.hashSync(password, 8);
 
@@ -83,12 +77,6 @@ router.post(
               );
               
               console.log(token)
-              // res.redirect('/user/login');
-              // res.render('layouts/login', {
-              //   title: 'Login Page',
-              //   auth: true,
-              //   token: token,
-              // })
               res.status(200).send({ auth: true, token: token });
             }
           );
@@ -108,11 +96,6 @@ router.post(
  * @param - /user/me
  */
 
-router.get('/login', (req, res, next) => {
-  res.render('layouts/login', {
-    title: 'Login Page',
-  });
-});
 
 router.post(
   "/login",
@@ -157,18 +140,14 @@ router.post(
             }
           );
 
-          // res.redirect('/user/me')
-
-          // res.render('pages/dashboard', {
-          //   title: 'Dashboard',
-          //   auth: true,
-          //   token: token
-          // });
+          res.cookie('x-access-token', token, { maxAge: 10000, httpOnly: true });
 
           res.status(200).json({
             auth: true,
-            token: token
+            token: token,
+            url: 'http://localhost:3000/user/me'
           });
+
         } else {
           return res.status(400).json({
             message: "User not exists"
@@ -199,13 +178,6 @@ router.post(
     if (err)
       return res.status(500).send("There was a problem finding the user.");
     if (!results) return res.status(404).send("No user found.");
-
-    // res.render('pages/dashboard.ejs', {
-    //   title: 'Dashboard',
-    //   results: results,
-    //   token: token,
-    //   auth: true
-    // })
     res.status(200).send(results)
   });
  });
